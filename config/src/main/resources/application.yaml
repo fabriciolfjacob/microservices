@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: configuracao
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/fabriciolfjacob/configuracao.git
+  rabbitmq:
+    port: 5672
+    username: guest
+    password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - bus-refresh
+server:
+  port: 8888
