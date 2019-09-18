@@ -26,7 +26,7 @@ class ControllerExceptionAdvice {
     @ExceptionHandler(ObjetoDuplicadoException::class)
     fun objectDuplicado(e: ObjetoDuplicadoException, request: HttpServletRequest): ResponseEntity<StandardError> {
         logger.error("Falha objeto duplicado.")
-        val err = StandardError(HttpStatus.CONFLICT as Integer, e.message, System.currentTimeMillis())
+        val err = StandardError(HttpStatus.CONFLICT.value() as Integer, e.message, System.currentTimeMillis())
         return ResponseEntity.status(HttpStatus.CONFLICT).body(err)
     }
 

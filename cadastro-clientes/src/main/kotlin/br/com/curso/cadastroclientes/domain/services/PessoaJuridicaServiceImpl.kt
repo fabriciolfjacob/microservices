@@ -26,7 +26,7 @@ class PessoaJuridicaServiceImpl: PessoaJuridicaService {
     override fun salvar(pessoaDto: PessoaDto): PessoaJuridica {
         var pessoa = createPessoa(pessoaDto) as PessoaJuridica
 
-        if(pessoaJuridicaRepository.findByCnpj(pessoa.cnpj) != null){
+        if(isCnpjExistente(pessoa.cnpj)){
             throw ObjetoDuplicadoException("Cnpj ja encontra-se cadastrado. Cnpj informado: ${pessoa.cnpj}")
         }
 
@@ -60,6 +60,20 @@ class PessoaJuridicaServiceImpl: PessoaJuridicaService {
     override fun remove(id: Long) {
         var pessoa = findById(id)
         pessoaJuridicaRepository.delete(pessoa)
+    }
+
+    private fun isCnpjExistente(cnpj: String): Boolean {
+        try{
+            var pessoa = pessoaJuridicaRepository.findByCnpj(cnpj)
+
+            if(pessoa != null){
+                return true
+            }
+
+            return false
+        }catch (e: Exception){
+            return false
+        }
     }
 
     private fun findAllCache(): List<PessoaJuridica> {
