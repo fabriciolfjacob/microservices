@@ -6,4 +6,6 @@ import javax.persistence.Entity
 
 @Entity
 @DiscriminatorValue("PJ")
-class PessoaJuridica(override var nome: String, override var endereco: String, @Column(name = "cnpj") val cnpj: String): Pessoa(), Entidade
+class PessoaJuridica(override var nome: String, override var endereco: String, @Column(name = "cnpj", unique = true) var cnpj: String): Pessoa(), Entidade{
+    constructor(): this("", "", "")
+}

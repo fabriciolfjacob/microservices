@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 @RestController
-@RequestMapping("/pessoa")
+@RequestMapping("/pf")
 @CrossOrigin(origins = arrayOf("*"))
-class PessoaController {
+class PessoaFisicaController {
 
     @Autowired
     lateinit var pessoaFisicaService: PessoaFisicaService
 
-    @PostMapping("/pf")
+    @PostMapping
     fun createPf(@RequestBody dto: PessoaDto): ResponseEntity<Unit>{
         var pessoa = pessoaFisicaService.salvar(dto)
         var uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -26,8 +26,24 @@ class PessoaController {
         return ResponseEntity.created(uri).build()
     }
 
-    @GetMapping("/pf/{id}")
+    @GetMapping("/{id}")
     fun findByIdPf(@PathVariable("id") id: Long): ResponseEntity<PessoaFisica>{
         return ResponseEntity.ok().body(pessoaFisicaService.findById(id))
+    }
+
+    @PutMapping("/{id}")
+    fun updatePf(@PathVariable("id")id : Long, @RequestBody pessoaDto: PessoaDto): ResponseEntity<PessoaFisica>{
+        return ResponseEntity.ok().body(pessoaFisicaService.update(id, pessoaDto))
+    }
+
+    @GetMapping
+    fun findAll(): ResponseEntity<List<PessoaFisica>>{
+        return ResponseEntity.ok().body(pessoaFisicaService.findAll())
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable("id")id: Long): ResponseEntity<Unit>{
+        pessoaFisicaService.remove(id)
+        return ResponseEntity.noContent().build()
     }
 }

@@ -11,7 +11,7 @@ import javax.persistence.Inheritance
 @Entity
 @Table(name = "pessoa")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo", length = 1, discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "tipo", length = 2, discriminatorType = DiscriminatorType.STRING)
 open class Pessoa(): Serializable {
     companion object {
         private const val serialVersionUID = 1L
