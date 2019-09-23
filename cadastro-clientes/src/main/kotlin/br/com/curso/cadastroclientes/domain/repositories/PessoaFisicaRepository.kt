@@ -8,5 +8,5 @@ import org.springframework.data.repository.query.Param
 interface PessoaFisicaRepository: JpaRepository<PessoaFisica, Long>{
 
     @Query("select p from PessoaFisica p where p.cpf = :parcnpj")
-    fun findByCpf(@Param("parcnpj") cpf: String): PessoaFisica
+    fun findByCpf(@Param("parcnpj") cpf: String): PessoaFisica?
 }

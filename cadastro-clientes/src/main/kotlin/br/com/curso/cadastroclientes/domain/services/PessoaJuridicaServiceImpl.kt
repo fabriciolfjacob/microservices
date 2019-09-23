@@ -20,9 +20,6 @@ class PessoaJuridicaServiceImpl: PessoaJuridicaService {
     @Autowired
     lateinit var pessoaJuridicaRepository: PessoaJuridicaRepository
 
-    @Autowired
-    lateinit var cacheManager: CacheManager
-
     override fun salvar(pessoaDto: PessoaDto): PessoaJuridica {
         var pessoa = createPessoa(pessoaDto) as PessoaJuridica
 
@@ -33,14 +30,18 @@ class PessoaJuridicaServiceImpl: PessoaJuridicaService {
         return pessoaJuridicaRepository.save(pessoa)
     }
 
-    override fun findById(id: Long): PessoaJuridica {
-        var obj = pessoaJuridicaRepository.findById(id)
+    override fun findByCnpj(cnpj: String): PessoaJuridica {
+        var obj = pessoaJuridicaRepository.findByCnpj(cnpj)
+        obj ?: throw ObjetoNaoEncontradoException("Pessoa Juridica não encontrada. Cnpj informado: $cnpj")
+        return obj
+    }
 
-        if(!obj.isPresent){
+    private fun findById(id: Long): PessoaJuridica {
+        try{
+            return pessoaJuridicaRepository.findById(id).get()
+        }catch (e: Exception){
             throw ObjetoNaoEncontradoException("Pessoa Juridica não encontrada. Pessoa informada: $id")
         }
-
-        return obj.get()
     }
 
     @CachePut("pessoasJuridicas")

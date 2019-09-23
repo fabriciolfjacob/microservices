@@ -8,6 +8,6 @@ interface PessoaJuridicaService {
     fun salvar(pessoaDto: PessoaDto): PessoaJuridica
     fun update(id: Long, pessoaDto: PessoaDto): PessoaJuridica
     fun remove(id: Long)
-    fun findById(id: Long): PessoaJuridica
+    fun findByCnpj(cnpj: String): PessoaJuridica
     fun findAll(): List<PessoaJuridica>
 }

@@ -26,9 +26,9 @@ class PessoaFisicaController {
         return ResponseEntity.created(uri).build()
     }
 
-    @GetMapping("/{id}")
-    fun findByIdPf(@PathVariable("id") id: Long): ResponseEntity<PessoaFisica>{
-        return ResponseEntity.ok().body(pessoaFisicaService.findById(id))
+    @GetMapping("/{cpf}")
+    fun findByIdPf(@PathVariable("cpf") cpf: String): ResponseEntity<PessoaFisica>{
+        return ResponseEntity.ok().body(pessoaFisicaService.findByCpf(cpf))
     }
 
     @PutMapping("/{id}")

@@ -11,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/produto")
 @CrossOrigin(origins = arrayOf("*"))
 class ProdutoController{
 
@@ -24,10 +23,10 @@ class ProdutoController{
         return produtoService.findAll()
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{descricao}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun findById(@PathVariable("id") id: String): Produto{
-        return produtoService.findById(id)
+    fun findById(@PathVariable("descricao") descricao: String): Produto{
+        return produtoService.findByDescricao(descricao)
     }
 
     @PutMapping("/{id}")

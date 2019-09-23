@@ -26,9 +26,9 @@ class PessoaJuridicaController{
         return ResponseEntity.created(uri).build()
     }
 
-    @GetMapping("/{id}")
-    fun findById(@PathVariable("id") id: Long) : ResponseEntity<PessoaJuridica> {
-        return ResponseEntity.ok().body(pessoaJuridicaService.findById(id))
+    @GetMapping("/{cnpj}")
+    fun findById(@PathVariable("cnpj") cnpj: String) : ResponseEntity<PessoaJuridica> {
+        return ResponseEntity.ok().body(pessoaJuridicaService.findByCnpj(cnpj))
     }
 
     @GetMapping

@@ -10,4 +10,5 @@ interface ProdutoService {
     fun delete(id: String)
     fun findById(id: String): Produto
     fun findAll(): List<Produto>
+    fun findByDescricao(descricao: String): Produto
 }

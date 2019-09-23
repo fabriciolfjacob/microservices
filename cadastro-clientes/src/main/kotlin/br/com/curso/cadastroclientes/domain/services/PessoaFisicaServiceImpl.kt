@@ -18,9 +18,6 @@ class PessoaFisicaServiceImpl: PessoaFisicaService {
     @Autowired
     lateinit var pessoaFisicaRepository: PessoaFisicaRepository
 
-    @Autowired
-    lateinit var cacheManager: CacheManager
-
     override fun salvar(dto: PessoaDto): PessoaFisica {
         var pessoa = createPessoa(dto) as PessoaFisica
 
@@ -45,18 +42,21 @@ class PessoaFisicaServiceImpl: PessoaFisicaService {
         }
     }
 
-    override fun findById(id: Long): PessoaFisica {
-        var obj = pessoaFisicaRepository.findById(id)
+    override fun findByCpf(cpf: String): PessoaFisica {
+        var obj = pessoaFisicaRepository.findByCpf(cpf)
+        obj ?: throw ObjetoNaoEncontradoException("Pessoa não localizada. Cpf informado: $cpf")
+        return obj
+    }
 
-        if(!obj.isPresent){
-            throw ObjetoNaoEncontradoException("Pessoa não localizada. Id informado: $id")
+    private fun findById(id: Long): PessoaFisica {
+        try{
+            return pessoaFisicaRepository.findById(id).get()
+        }catch (e: Exception){
+            throw ObjetoNaoEncontradoException("Pessoa fisica não localizada. Id informado: $id")
         }
-
-        return obj.get()
     }
 
     @HystrixCommand(fallbackMethod = "findAllCache")
-    @CachePut("pessoasFisicas")
     override fun findAll(): List<PessoaFisica> {
         return pessoaFisicaRepository.findAll()
     }

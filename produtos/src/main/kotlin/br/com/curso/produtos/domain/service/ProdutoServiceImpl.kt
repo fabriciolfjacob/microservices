@@ -6,7 +6,6 @@ import br.com.curso.produtos.domain.exceptions.ProdutoDuplicadoException
 import br.com.curso.produtos.domain.exceptions.ProdutoPrecoZeroException
 import br.com.curso.produtos.domain.model.Produto
 import br.com.curso.produtos.domain.repositories.ProdutoRepository
-import com.netflix.discovery.converters.Auto
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -83,15 +82,8 @@ class ProdutoServiceImpl: ProdutoService {
         var produto = getProduto(id)
         produtoRepository.delete(produto)
     }
-
-    @HystrixCommand(fallbackMethod = "findByIdCache")
-    @CachePut("produtos")
     override fun findById(id: String): Produto {
         logger.info("Pesquisando produto de id: $id")
-        /*var random = Random()
-        if(random.nextInt(26) % 2 == 0) {
-            throw RuntimeException("teste")
-        }*/
         return getProduto(id)
     }
 
@@ -105,14 +97,29 @@ class ProdutoServiceImpl: ProdutoService {
         return produtos
     }
 
-    fun findByIdCache(id: String): Produto?{
+    fun findByDescricaoCache(descricao: String): Produto?{
         logger.warn("Iniciando método de fallback.")
-        var value = cacheManager.getCache("produtos")!!.get(id)
+        var value = cacheManager.getCache("produtos")!!.get(descricao)
 
         if(value != null){
             return value.get() as Produto
         }
 
         return null
+    }
+
+    @HystrixCommand(fallbackMethod = "findByDescricaoCache")
+    @CachePut("produtos")
+    override fun findByDescricao(descricao: String): Produto {
+        /*var random = Random()
+        if(random.nextInt(26) % 2 == 0) {
+            throw RuntimeException("teste")
+        }*/
+        try{
+            logger.info("Realizando a consulta do produto pela descrição : $descricao")
+            return produtoRepository.findByDescricao(descricao)
+        }catch (e: Exception){
+            throw ObjectNotFoundException("Nenhum produto localizado para a descrição: $descricao")
+        }
     }
 }
