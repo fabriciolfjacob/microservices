@@ -77,13 +77,7 @@ class PessoaJuridicaServiceImpl: PessoaJuridicaService {
     }
 
     private fun findAllCache(): List<PessoaJuridica> {
-        var value = cacheManager.getCache("pessoasJuridicas") as Cache.ValueWrapper
-
-        if(value.get() == null){
-            return  emptyList()
-        }
-
-        return value.get() as ArrayList<PessoaJuridica>
+        return  emptyList()
     }
 
     private fun createPessoa(dto: PessoaDto): Entidade {
