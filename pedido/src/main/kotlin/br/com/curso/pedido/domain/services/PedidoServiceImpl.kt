@@ -6,11 +6,13 @@ import br.com.curso.pedido.domain.dto.PedidoDto
 import br.com.curso.pedido.domain.exceptions.ClienteNaoInformadoException
 import br.com.curso.pedido.domain.exceptions.PedidoNaoLocalizadoException
 import br.com.curso.pedido.domain.exceptions.PedidoSemProdutosException
+import br.com.curso.pedido.domain.repositories.PedidoItemRepository
 import br.com.curso.pedido.domain.repositories.PedidoRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Service
 class PedidoServiceImpl: PedidoService {
@@ -25,6 +27,9 @@ class PedidoServiceImpl: PedidoService {
 
     @Autowired
     lateinit var clienteService: ClienteService
+
+    @Autowired
+    lateinit var pedidoItemRepository: PedidoItemRepository
 
     override fun findById(id: String): Pedido {
        try{
@@ -66,7 +71,7 @@ class PedidoServiceImpl: PedidoService {
 
     private fun getTotalPedido(pedidoItens: List<PedidoItem>): BigDecimal{
         var total = pedidoItens.sumByDouble { it.total.toDouble() }
-        return BigDecimal(total)
+        return BigDecimal(total).setScale(4, RoundingMode.HALF_EVEN)
     }
 
     private fun validarProduto(dto: PedidoDto) {
@@ -86,6 +91,7 @@ class PedidoServiceImpl: PedidoService {
             PedidoItem(null, produtoDto.id, it.quantidade, produtoDto.preco.multiply(BigDecimal( it.quantidade)))
         }
 
+        produtos.map { pedidoItemRepository.save(it) }
         return  produtos
     }
 

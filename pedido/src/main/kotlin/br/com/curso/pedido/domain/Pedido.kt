@@ -13,7 +13,7 @@ data class Pedido(
         @NotBlank
         var idCliente: Long,
         var total: BigDecimal,
-        @DBRef
+        @DBRef(lazy = true)
         var itens: List<PedidoItem>){
 
     data class PedidoBuilder(

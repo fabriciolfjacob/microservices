@@ -1,5 +1,6 @@
 package br.com.curso.pedido.domain.controller
 
+import br.com.curso.pedido.domain.Pedido
 import br.com.curso.pedido.domain.dto.PedidoDto
 import br.com.curso.pedido.domain.services.PedidoService
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,5 +25,10 @@ class PedidoController {
                 .buildAndExpand(pedido.id)
                 .toUri()
         return ResponseEntity.created(uri).build()
+    }
+
+    @GetMapping
+    fun findAll(): ResponseEntity<List<Pedido>>{
+        return ResponseEntity.ok().body(pedidoService.findAll())
     }
 }

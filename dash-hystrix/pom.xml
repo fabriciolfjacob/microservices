@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.curso</groupId>
-	<artifactId>produtos</artifactId>
+	<artifactId>dash-hystrix</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>produtos</name>
+	<name>dash-hystrix</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -26,26 +26,6 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-cache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-kotlin</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-reflect</artifactId>
 		</dependency>
@@ -55,25 +35,24 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-turbine</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -91,7 +70,6 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>produtos</finalName>
 		<sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
 		<testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 		<plugins>
@@ -117,44 +95,6 @@
 						<version>${kotlin.version}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.21.0</version>
-				<configuration>
-					<images>
-						<image>
-							<name>curso/${project.build.finalName}</name>
-							<build>
-								<from>openjdk:8-jdk-alpine</from>
-								<entryPoint>java -Dspring.profiles.active=docker -jar /application/${project.build.finalName}.jar</entryPoint>
-								<assembly>
-									<basedir>/application</basedir>
-									<descriptorRef>artifact</descriptorRef>
-									<inline>
-										<id>assembly</id>
-										<files>
-											<file>
-												<source>target/${project.build.finalName}.jar</source>
-											</file>
-										</files>
-									</inline>
-								</assembly>
-								<tags>
-									<tag>latest</tag>
-								</tags>
-								<ports>
-									<port>9090</port>
-								</ports>
-							</build>
-							<run>
-								<namingStrategy>alias</namingStrategy>
-							</run>
-							<alias>${project.build.finalName}</alias>
-						</image>
-					</images>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
