@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.turbine.EnableTurbine
 @EnableTurbine
 @EnableDiscoveryClient
 class DashHystrixApplication
-///actuator/hystrix.stream -- de cada serviço
+///actuator/hystrix.stream -- de cada serviço, resolver quando esta no docker não funciona os stream
 //http://localhost:9999/hystrix
 fun main(args: Array<String>) {
 	runApplication<DashHystrixApplication>(*args)
