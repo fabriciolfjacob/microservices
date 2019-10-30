@@ -20,8 +20,8 @@ spring:
             - Path=/pf
 
         - id: clientespj
-            uri: lb://clientes/pj
-            predicates:
+          uri: lb://clientes/pj
+          predicates:
               - Path=/pj
 
         - id: produtos
