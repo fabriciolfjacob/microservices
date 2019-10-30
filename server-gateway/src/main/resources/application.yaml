@@ -1,0 +1,42 @@
+ribbon.NFLoadBalancerPingInterval: 5
+ribbon.ServerListRefreshInterval: 5000
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: eureka-web-start
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/web
+          filters:
+            - SetPath=/
+
+        - id: clientespf
+          uri: lb://clientes/pf
+          predicates:
+            - Path=/pf
+
+        - id: clientespj
+            uri: lb://clientes/pj
+            predicates:
+              - Path=/pj
+
+        - id: produtos
+          uri: lb://produtos
+          predicates:
+            - Path=/produtos/**
+
+        - id: faturamento
+          uri: lb://faturamento
+          predicates:
+            - Path=/faturamento/**
+
+eureka:
+  client:
+    service-url:
+      registryFetchIntervalSeconds: 5
+      defaultZone: http://localhost:8761/eureka
+
