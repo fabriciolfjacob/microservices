@@ -1,7 +1,25 @@
+
+server:
+  port: 8083
 spring:
   application:
     name: faturamento
   cloud:
     config:
-      uri:
-        - http://localhost:8888
+      fail-fast: true
+        retry:
+          initial-interval: 4000
+          max-attempts: 5
+          multiplier: 2.0
+          max-interval: 6000
+      uri: http://localhost:8888
+---
+server:
+  port: 8080
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: http://config:8888
+
+

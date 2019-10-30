@@ -1,3 +1,4 @@
+
 server:
   port: 8082
 spring:
@@ -5,16 +6,20 @@ spring:
     name: clientes
   cloud:
     config:
+      fail-fast: true
+        retry:
+          initial-interval: 4000
+          max-attempts: 5
+          multiplier: 2.0
+          max-interval: 6000
       uri: http://localhost:8888
-
 ---
 server:
-  port: 8082
+  port: 8080
 spring:
   profiles: docker
-  application:
-    name: clientes
   cloud:
     config:
       uri: http://config:8888
-      fail-fast: true
+
+
