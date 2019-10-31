@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
 import javax.validation.Valid
 import reactor.core.publisher.Flux
+import reactor.core.publisher.onErrorReturn
 import java.lang.RuntimeException
 
 
@@ -35,6 +36,15 @@ class RecomendacaoResource {
     fun findAll(): Flux<Recomendacao> {
         return recomendacaoService.findAll()
                 .switchIfEmpty { ResponseEntity.notFound().build<Unit>() }
-                .onErrorMap { throw RuntimeException("Falha ao listas as recomendações.") }
+                .onErrorReturn(findAllFallback()).log()
+    }
+
+    fun findAllFallback(): Recomendacao{
+        return Recomendacao("", "9999", "Fallbackx")
+    }
+
+    @GetMapping("/{id}",produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun findById(@PathVariable("id") id: String): Mono<Recomendacao> {
+        return recomendacaoService.findById(id)
     }
 }

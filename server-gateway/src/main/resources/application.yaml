@@ -1,18 +1,33 @@
 ribbon.NFLoadBalancerPingInterval: 5
 ribbon.ServerListRefreshInterval: 5000
 
+app.eureka: localhost
+server:
+  port: 8443
 spring:
   application:
     name: gateway
   cloud:
     gateway:
       routes:
+        - id: eureka-api
+          uri: http://${app.eureka}:8761
+          predicates:
+            - Path=/eureka/api/{segment}
+          filters:
+            - SetPath=/eureka/{segment}
+
         - id: eureka-web-start
-          uri: http://localhost:8761
+          uri: http://${app.eureka}:8761/eureka
           predicates:
             - Path=/eureka/web
           filters:
             - SetPath=/
+
+        - id: eureka-web-other
+          uri: http://${app.eureka}:8761
+          predicates:
+            - Path=/eureka/**
 
         - id: clientespf
           uri: lb://clientes/pf
@@ -22,7 +37,7 @@ spring:
         - id: clientespj
           uri: lb://clientes/pj
           predicates:
-              - Path=/pj
+            - Path=/pj
 
         - id: produtos
           uri: lb://produtos
@@ -34,9 +49,18 @@ spring:
           predicates:
             - Path=/faturamento/**
 
+        - id: recomendacao
+          uri: lb://recomendacao
+          predicates:
+            - Path=/recomendacao/**
+
 eureka:
   client:
     service-url:
       registryFetchIntervalSeconds: 5
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: "http://${app.eureka}:8761/eureka/"
 
+---
+spring.profiles: docker
+
+app.eureka: eureka

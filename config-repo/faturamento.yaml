@@ -1,0 +1,35 @@
+app:
+  discovery: localhost
+  rabbitmq: localhost
+  mongodb: localhost
+  
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.discovery}:8761/eureka
+      registryFetchIntervalSeconds: 5
+      
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${app.mongodb}:27017/curso
+  rabbitmq:
+    host: ${app.rabbitmq}
+    port: 5672
+    username: guest
+    password: guest      
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+---
+spring.profiles: docker
+app:
+  discovery: eureka
+  rabbitmq: rabbitmq
+  mongodb: mongo 

@@ -1,0 +1,133 @@
+version: '2.1'
+
+services:
+  eureka:
+    environment: 
+      - SPRING_PROFILES_ACTIVE=docker
+    build: discovery
+    networks: 
+      - my-network
+    mem_limit: 350m  
+  
+  faturamento:
+    build: pedido
+    mem_limit: 350m
+    networks: 
+      - my-network
+    environment: 
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on: 
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  produtos:
+    build: produtos
+    mem_limit: 350m
+    networks: 
+      - my-network
+    environment: 
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on: 
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+  
+
+  zipkin:
+    image: openzipkin/zipkin:2.12.9
+    mem_limit: 512m
+    networks:
+      - my-network
+    environment:
+      - STORAGE_TYPE=mem
+      - RABBIT_ADDRESSES=rabbitmq
+    ports:
+      - 9411:9411
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  
+  config:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker,native
+    volumes:
+      - $PWD/config-repo:/config-repo
+    build: config
+    networks:
+      - my-network
+    mem_limit: 350m
+
+  clientes:
+    build: cadastro-clientes
+    mem_limit: 350m
+    networks: 
+      - my-network
+    environment: 
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on: 
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    image: rabbitmq:3.7.8-management
+    mem_limit: 350m
+    networks:
+      - my-network
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+
+  gateway:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
+      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
+    build: server-gateway
+    networks:
+      - my-network
+    mem_limit: 350m
+    ports:
+      - "8443:8443"    
+      
+  mysql:
+    image: mysql:latest
+    mem_limit: 350m
+    networks:
+      - my-network
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=cadastro
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 20s
+      timeout: 5s
+      retries: 10      
+
+  mongodb:
+    image: mongo:3.6.9
+    mem_limit: 350m
+    networks:
+      - my-network
+    ports:
+      - "27017:27017"
+    command: mongod --smallfiles
+    healthcheck:
+      test: "mongo --eval 'db.stats().ok'"
+      interval: 20s
+      timeout: 5s      
+
+networks:
+  my-network:
+    name: my-network
