@@ -32,7 +32,7 @@ class RecomendacaoResource {
                 }
     }
 
-    @GetMapping(produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @GetMapping(produces = arrayOf(MediaType.APPLICATION_STREAM_JSON_VALUE))
     fun findAll(): Flux<Recomendacao> {
         return recomendacaoService.findAll()
                 .switchIfEmpty { ResponseEntity.notFound().build<Unit>() }
